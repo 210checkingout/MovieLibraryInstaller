@@ -1,6 +1,6 @@
 <# 
 Get_MovieLibrary.ps1
-Lightweight bootstrapper that downloads and runs the full Movie Library Organizer builder.
+Lightweight bootstrapper that downloads and runs the full Movie Library Organizer installer.
 After it finishes, open the new folder and double-click "Run Movie Manager.bat".
 #>
 
@@ -14,14 +14,15 @@ if (!(Test-Path $InstallPath)) {
     New-Item -ItemType Directory -Path $InstallPath | Out-Null
 }
 
-# URL of the hosted installer script
-$builderUrl = "https://raw.githubusercontent.com/MarkMercurioTools/MovieLibraryInstaller/main/Create_MovieManager.ps1"
+# ✅ Your live GitHub installer link
+$builderUrl = "https://raw.githubusercontent.com/210checkingout/MovieLibraryInstaller/refs/heads/main/Create_MovieManager.ps1"
 
-# Destination for the full installer
+# Destination for the downloaded installer file
 $builderFile = Join-Path $InstallPath "Create_MovieManager.ps1"
 
 Write-Host "`nDownloading full installer script..." -ForegroundColor Cyan
 try {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     Invoke-WebRequest -Uri $builderUrl -OutFile $builderFile -UseBasicParsing
     Write-Host "✓ Download complete." -ForegroundColor Green
 } catch {
@@ -32,8 +33,8 @@ try {
 Write-Host "`nRunning installer..." -ForegroundColor Cyan
 try {
     & powershell -ExecutionPolicy Bypass -File $builderFile
-    Write-Host "`nAll done!" -ForegroundColor Green
-    Write-Host "Open $InstallPath and double-click Run Movie Manager.bat" -ForegroundColor Yellow
+    Write-Host "`n🎬 All done!" -ForegroundColor Green
+    Write-Host "➡️  Open $InstallPath and double-click Run Movie Manager.bat" -ForegroundColor Yellow
 } catch {
     Write-Host "❌ Installer execution failed: $($_.Exception.Message)" -ForegroundColor Red
 }
